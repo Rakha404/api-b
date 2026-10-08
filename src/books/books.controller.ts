@@ -1,28 +1,42 @@
-import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { BooksService } from './books.service.js';
+import { CreateBookDto } from './dto/create-book.dto.js';
 
 @Controller('books') //decorator
 export class BooksController {
-    //menampilkan data
-    @Get()
-    findAll() : string {
-        return 'Menampilkan semua data buku';
-    }
+  constructor(private readonly booksService: BooksService) {}
 
-    //menyimpan data
-    @Post()
-    simpanData() : string {
-        return 'Menyimpan data buku';
-    }
+  //menampilkan data
+  @Get()
+  findAll(@Query() query: any) {
+    return this.booksService.findAll();
+  }
 
-    //mengupdate data
-    @Put(':id')
-    updateData(@Param('id') id: string): string{
-        return `Mengupdate data buku dengan id ${id}`;
-    }
+  //menyimpan data
+  @Post()
+  simpanData(@Body() createBookDto: CreateBookDto) {
+    return this.booksService.simpanData(createBookDto);
+  }
 
-    //menghapus data
-    @Delete(':id')
-    deleteData(@Param('id') id: string): string {
-        return `Menghapus data buku dengan id ${id}`;
-    }
+  //mengupdate data
+  @Put(':id')
+  updateData(@Param('id') id: string, @Body() createBookDto: CreateBookDto) {
+    return this.booksService.updateData(parseInt(id), createBookDto);
+  }
+
+  //menghapus data
+  // menghapus data
+  @Delete(':id')
+  deleteData(@Param('id') id: string) {
+    return this.booksService.deleteData(parseInt(id));
+  }
 }
